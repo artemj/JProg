@@ -1,5 +1,5 @@
-package perevorot;
-public class Perevorot {
+package perevorot_v1.pkg2;
+public class Perevorot_v12 {
     public static void main(String[] args) {
         String s = "Мама Мыла Раму", res = "";
         int k=0,t=0;   
@@ -19,5 +19,5 @@ public class Perevorot {
             }          
         }
         System.out.println(res);  
-    }    
+    }
 }
