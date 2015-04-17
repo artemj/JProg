@@ -6,12 +6,11 @@ import java.util.ArrayList;
 
 public class Energo {
     private static void exists(String fileName) throws FileNotFoundException {
-    File file = new File(fileName);
-    if (!file.exists()){
-        throw new FileNotFoundException(file.getName());
+        File file = new File(fileName);
+        if (!file.exists()){
+            throw new FileNotFoundException(file.getName());
+        }
     }
-}
-    private static File file = new File("D://энерго.txt");
     
     public static String read(String fileName) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
@@ -24,21 +23,22 @@ public class Energo {
                     sb.append(s);
                     sb.append("\n");
                 }
-            } finally {
+            }
+            finally {
                 in.close();
             }
-        } catch(IOException e) {
+        }
+        catch(IOException e) {
             throw new RuntimeException(e);
         }
         return sb.toString();
     }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        ArrayList<Integer> ob = new ArrayList<>();
+    
+    public static ArrayList<Integer> masList(String s){
+        ArrayList<Integer> str = new ArrayList<>();
         int a;
         int n = 0;
-        String ss = Energo.read("D://энерго.txt");
-        String sNew = ss.replace('\n',' ').replace('\t', ' ');
+        String sNew = s.replace('\n',' ').replace('\t', ' ');
         String sMas[] = sNew.split(" ");
         for (int i=0; i<sMas.length; i+=3){
             if(i+3<sMas.length){
@@ -49,25 +49,29 @@ public class Energo {
                 else{    
                     a = Integer.valueOf(sMas[i+2]);
                     n += a;
-                    ob.add(n);
+                    str.add(n);
                     n = 0; 
                 }
             }
             else{
                 a = Integer.valueOf(sMas[i+2]);
                 n += a;
-                ob.add(n);
+                str.add(n);
             }
         }
+        return str;
+    }
+    
+    public static void grafik(ArrayList<Integer> str){
         int razmer = 0;
-        System.out.println(ob);
-        int c = ob.get(1);
+        System.out.println(str);
+        int c = str.get(1);
         System.out.println("^");
-        for (int i = ob.size()-1; i >= 0; i--){
+        for (int i = str.size()-1; i >= 0; i--){
             System.out.print("|");
-            for (int j = 0; j <= ob.get(i); j++){
-                if (razmer<ob.get(i)){
-                    razmer = ob.get(i);
+            for (int j = 0; j <= str.get(i); j++){
+                if (razmer<str.get(i)){
+                    razmer = str.get(i);
                 }
                 System.out.print("0");
             }
@@ -77,5 +81,13 @@ public class Energo {
             System.out.print("-");
         }
         System.out.println(">");
+    }
+    
+     private static File file = new File("D://энерго.txt");
+
+    public static void main(String[] args) throws FileNotFoundException {
+        String ss = Energo.read("D://энерго.txt");
+        ArrayList<Integer> ob = Energo.masList(ss);
+        grafik(ob);
     }           
 }
