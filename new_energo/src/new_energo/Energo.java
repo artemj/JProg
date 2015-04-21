@@ -17,6 +17,7 @@ public class Energo {
     } 
     
     public static ArrayList<Fields> readFile(String fileName) throws FileNotFoundException, ParseException {
+        File file = new File(fileName); 
         ArrayList<Fields> listElements = new ArrayList<>();
         checkExists(fileName);
         try {
@@ -69,7 +70,7 @@ public class Energo {
         System.out.println("^");
         for (int i = resList.size()-1; i >= 0; i--){
             System.out.print("|");
-            for (int j = 0; j <= resList.get(i); j++){
+            for (int j = 0; j < resList.get(i); j++){
                 if (razmer<resList.get(i)){
                     razmer = resList.get(i);
                 }
@@ -100,8 +101,6 @@ public class Energo {
         if (!file.exists()) {
             throw new FileNotFoundException(file.getName());
         }
-    }
-    
-    private static final File file = new File("D://энерго.txt");    
+    }     
 }
 
