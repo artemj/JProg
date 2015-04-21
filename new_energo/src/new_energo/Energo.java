@@ -11,13 +11,13 @@ import java.util.Date;
 public class Energo {
     
     public static void main(String[] args) throws FileNotFoundException, ParseException {
-        ArrayList<NewFields> textFile = readFile("D://энерго.txt");
+        ArrayList<Fields> textFile = readFile("D://энерго.txt");
         ArrayList<Integer> listMeter = meterReading(textFile);
         plot(listMeter);
     } 
     
-    public static ArrayList<NewFields> readFile(String fileName) throws FileNotFoundException, ParseException {
-        ArrayList<NewFields> listElements = new ArrayList<>();
+    public static ArrayList<Fields> readFile(String fileName) throws FileNotFoundException, ParseException {
+        ArrayList<Fields> listElements = new ArrayList<>();
         checkExists(fileName);
         try {
             BufferedReader in = new BufferedReader(new FileReader(file.getAbsoluteFile()));
@@ -30,7 +30,7 @@ public class Energo {
                     int a = Integer.valueOf(sMas[0]);                  
                     Date b = format.parse(sMas[1]);
                     int c = Integer.valueOf(sMas[2]);
-                    NewFields elem = new NewFields(a,b,c); 
+                    Fields elem = new Fields(a,b,c); 
                     listElements.add(elem);
                 }
             } finally {
@@ -42,12 +42,12 @@ public class Energo {
         return listElements;
     }   
     
-    public static ArrayList<Integer> meterReading(ArrayList<NewFields> listElements){
+    public static ArrayList<Integer> meterReading(ArrayList<Fields> listElements){
         ArrayList<Integer> resList = new ArrayList<>();
         int sum = 0;
         for(int i=0;i<listElements.size()-1;i++){
-            NewFields firstFlatNumber = listElements.get(i);
-            NewFields nextFlatNumber = listElements.get(i+1);
+            Fields firstFlatNumber = listElements.get(i);
+            Fields nextFlatNumber = listElements.get(i+1);
             if(i<listElements.size()-2){                
                 if(firstFlatNumber.number == nextFlatNumber.number){
                     sum += firstFlatNumber.meter;               
@@ -83,12 +83,12 @@ public class Energo {
         System.out.println(">");
     }
     
-    static class NewFields { 
+    static class Fields { 
         private int number;
         private final Date date;
-        private int meter;        
-      
-        public NewFields (int x, Date y, int z) {
+        private int meter; 
+        
+        public Fields (int x, Date y, int z) {
             this.number = x;
             this.date = y;
             this.meter = z;
