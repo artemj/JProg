@@ -84,18 +84,6 @@ public class Energo {
         System.out.println(">");
     }
     
-    static class Fields { 
-        private int number;
-        private final Date date;
-        private int meter; 
-        
-        public Fields (int x, Date y, int z) {
-            this.number = x;
-            this.date = y;
-            this.meter = z;
-        }
-    }
-    
     private static void  checkExists(String fileName) throws FileNotFoundException {
         File file = new File(fileName);
         if (!file.exists()) {
