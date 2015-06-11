@@ -17,6 +17,8 @@ public class TestMeterReading {
     
     @Test
     public void TestMeterReading() throws ParseException {
+        System.out.println ("Test 1");
+        Energo res = new Energo();
         DateFormat format;
         format = new SimpleDateFormat("dd-MM-yy");
         int a = 10, b = 1;
@@ -24,7 +26,8 @@ public class TestMeterReading {
         ArrayList<Fields> listElements = new ArrayList<>();
         Fields elem = new Fields(a,c,b);
         listElements.add(elem);
-        assertNotNull(Energo.meterReading(listElements));
+//        res.equals(listElements);
+        assertEquals(res.meterReading(listElements),null);
     }    
     
     @BeforeClass
