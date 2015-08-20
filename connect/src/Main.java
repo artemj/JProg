@@ -1,16 +1,16 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        ArrayList<Field> s = readFile(fileNameList);
+       HashMap<Integer, String> s = readFile(fileNumbersNames);
         selectionPerson(s);
     }
 
-    public static String fileNameList = "D://list.txt";
-    public static String fileNameLinks = "D://links.txt";
+    public static String fileNumbersNames = "D://list.txt";
+    public static String fileExistingLinks = "D://links.txt";
 
     private static void  checkExists(String fileName) throws FileNotFoundException {
         File file = new File(fileName);
@@ -19,9 +19,9 @@ public class Main {
         }
     }
 
-    public static ArrayList<Field> readFile (String fileName) throws IOException {
+    public static HashMap <Integer, String> readFile (String fileName) throws IOException {
         File file = new File(fileName);
-        ArrayList<Field> listNames = new ArrayList<Field>();
+        HashMap <Integer, String> listNames = new HashMap <>();
         checkExists(fileName);
         try {
             BufferedReader br = new BufferedReader(new FileReader(file.getAbsoluteFile()));
@@ -31,8 +31,7 @@ public class Main {
                     String nameArr[] = line.split(" ");
                     int number = Integer.valueOf(nameArr[0]);
                     String name = nameArr[1];
-                    Field element = new Field(number,name);
-                    listNames.add(element);
+                    listNames.put(number, name);
                 }
             } finally {
                 br.close();
@@ -43,7 +42,7 @@ public class Main {
         return listNames;
     }
 
-    public static String selectionPerson (ArrayList<Field> listNames) throws IOException {
+    public static String selectionPerson (HashMap <Integer, String> listNames) throws IOException {
         System.out.println("Enter a number from 1 to "+listNames.size());
         int numberFirstPerson = System.in.read()-48;
         Random random = new Random();
@@ -52,29 +51,30 @@ public class Main {
         String nameSecondPerson = null;
         String link = null;
         int numberSecondPerson;
-        for (int i=0; i<listNames.size();i++){
-            if(listNames.get(i).number == numberFirstPerson){
-                nameFirstPerson = listNames.get(i).name;
-            }
+        if(listNames.containsKey(numberFirstPerson)){
+            nameFirstPerson = listNames.get(numberFirstPerson);
         }
-        String links = readFileConnection(fileNameLinks);
-        String arrayLink [] = links.split("\t");
-        for (int i = 0; i < arrayLink.length; i++) {
-            String bothDue[] = arrayLink[i].split(", ");
-            if (bothDue[0].equals(nameFirstPerson)) {
+
+        /*Проверка наличия ранее созданой связи в файле*/
+
+        String links = readFileConnection(fileExistingLinks); // открываем файл
+        String arrayLink [] = links.split("\t"); // в него ранее записывалось так: связь имя1, имя2 таб. По табу разбиваем на отдельные связи в массив
+        for (int i = 0; i < arrayLink.length; i++) { // теперь каждую из них рассматриваем
+            String bothDue[] = arrayLink[i].split(", "); //разбиваем в массив на отдельные два имя
+            if (bothDue[0].equals(nameFirstPerson)) { //если нулевой элемент массива (тоесть первое имя) совпадет с тем, что мы ввели - значит связь уже существует просто берем второе имя записываем
                 nameSecondPerson = bothDue[1];
                 link = (nameFirstPerson + ", " + nameSecondPerson);
                 break;
             }
         }
-        if (nameSecondPerson == null) {
-            while (true) {
-                numberSecondPerson = random.nextInt(listNames.size()) + 1;
-                if (numberSecondPerson != numberFirstPerson) {
-                    break;
+        if (nameSecondPerson == null) { //делаем проверку на то, нашли ли мы в файле связь, если нет, то значит и второе имя мы не записали, значит оно равно нул
+            while (true) { //запускаем бесконечный цикл
+                numberSecondPerson = random.nextInt(listNames.size()) + 1; // берем рандомное число
+                if (numberSecondPerson != numberFirstPerson) { //если рандомное совпало с первым, тем что мы ввели с клавиатуры, то нужно другое рандомное число
+                    break; //выбрасывает из цикла, если рандом и нами введенное не совпали
                 }
             }
-            nameSecondPerson = listNames.get(numberSecondPerson - 1).name;
+            nameSecondPerson = listNames.get(numberSecondPerson);
             link = (nameFirstPerson + ", " + nameSecondPerson);
             writeFileConnection(link);
         }
@@ -82,8 +82,9 @@ public class Main {
         return link;
     }
 
+    /*запись в файл созданной связи*/
     public static void writeFileConnection (String link){
-        try(FileWriter writer = new FileWriter("D://links.txt", true)){
+        try(FileWriter writer = new FileWriter(fileExistingLinks, true)){
             writer.write(link+'\t');
         }
         catch(IOException e){
@@ -103,36 +104,5 @@ public class Main {
             System.out.println(ex.getMessage());
         }
         return str;
-    }
-}
-
-class Field {
-    int number;
-    String name;
-
-    Field(int number, String name){
-        this.number = number;
-        this.name = name;
-
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Field field = (Field) o;
-
-        if (number != field.number) return false;
-        if (name != null ? !name.equals(field.name) : field.name != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = number;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
     }
 }
