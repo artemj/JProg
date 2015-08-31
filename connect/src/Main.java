@@ -75,8 +75,8 @@ public class Main {
 
     public static String checkExistsLinks() throws FileNotFoundException {
         checkExists(fileExistingLinks);
-        String links = readFileConnection(fileExistingLinks); // открываем файл
-        String[] arrayLink = links.split("\t"); // в него ранее записывалось так: связь имя1, имя2 таб. По табу разбиваем на отдельные связи в массив
+        StringBuilder links = readFileConnection(fileExistingLinks); // открываем файл
+        String[] arrayLink = links.toString().split("\t"); // в него ранее записывалось так: связь имя1, имя2 таб. По табу разбиваем на отдельные связи в массив
         for (int i = 0; i < arrayLink.length; i++) { // теперь каждую из них рассматриваем
             String[] bothDue = arrayLink[i].split(", "); //разбиваем в массив на отдельные два имя
             if (bothDue[0].equals(nameFirstPerson)) { //если нулевой элемент массива (тоесть первое имя) совпадет с тем, что мы ввели - значит связь уже существует просто берем второе имя записываем
@@ -114,12 +114,12 @@ public class Main {
         }
     }
 
-    public  static String readFileConnection(final String nameFile) {
-        String str = new String();
+    public  static StringBuilder readFileConnection(final String nameFile) {
+        StringBuilder str = new StringBuilder();
         try (FileReader reader = new FileReader(nameFile)) {
             int c;
             while ((c = reader.read()) != -1) {
-                str += (char) c;
+                str.append((char) c);
             }
         }
         catch (IOException ex) {
