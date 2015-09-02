@@ -9,14 +9,15 @@ public class Main {
         selectionPerson(s);
     }
 
-    private static String fileNumbersNames = "D://list.txt";
-    private static String fileExistingLinks = "D://links.txt";
+    final static String fileNumbersNames = "D://list.txt";
+    final static String fileExistingLinks = "D://links.txt";
     private static String nameFirstPerson = null;
     private static String nameSecondPerson = null;
     private static String link = null;
     private static int numberFirstPerson;
     private static int numberSecondPerson;
 
+    /*Проверка наличия файла*/
     private static void  checkExists(final String fileName)
             throws FileNotFoundException {
         File file = new File(fileName);
@@ -28,6 +29,8 @@ public class Main {
             }
         }
     }
+
+    /*Чтение файла*/
     public static HashMap<Integer, String> readFile(final String fileName)
             throws IOException {
         File file = new File(fileName);
@@ -53,6 +56,7 @@ public class Main {
         return listNames;
     }
 
+    /*Выбор личностей и образование рандомной связи*/
     public static String selectionPerson(final HashMap<Integer, String> listNames)
             throws IOException {
         /*Ввод номера человека с клавиатуры*/
@@ -73,6 +77,7 @@ public class Main {
         return link;
     }
 
+    /*Проверка наличия существующей уже связи*/
     public static String checkExistsLinks() throws FileNotFoundException {
         checkExists(fileExistingLinks);
         StringBuilder links = readFileConnection(fileExistingLinks); // открываем файл
@@ -88,6 +93,7 @@ public class Main {
         return link;
     }
 
+    /*Создание новой связи*/
     public static String createNewLink(final HashMap<Integer, String> listNames) {
         Random random = new Random();
         if (nameSecondPerson == null) { //делаем проверку на то, нашли ли мы в файле связь, если нет, то значит и второе имя мы не записали, значит оно равно нул
@@ -98,22 +104,23 @@ public class Main {
                 }
             }
             nameSecondPerson = listNames.get(numberSecondPerson);
-            link = (nameFirstPerson + ", " + nameSecondPerson);
-            writeFileConnection(link);
+            writeFileConnection(nameFirstPerson, nameSecondPerson);
         }
         return link;
     }
 
     /*запись в файл созданной связи*/
-    public static void writeFileConnection(final String link) {
+    public static void writeFileConnection(final String nameFirstPerson, final String nameSecondPerson) {
+        link = (nameFirstPerson + ", " + nameSecondPerson);
         try (FileWriter writer = new FileWriter(fileExistingLinks, true)) {
             writer.write(link + '\t');
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    /*Чтение данных из файла созданных связей*/
     public  static StringBuilder readFileConnection(final String nameFile) {
         StringBuilder str = new StringBuilder();
         try (FileReader reader = new FileReader(nameFile)) {
