@@ -11,11 +11,6 @@ public class Main {
 
     final static String fileNumbersNames = "D://list.txt";
     final static String fileExistingLinks = "D://links.txt";
-    private static String nameFirstPerson = null;
-    private static String nameSecondPerson = null;
-    private static String link = null;
-    private static int numberFirstPerson;
-    private static int numberSecondPerson;
 
     /*Проверка наличия файла*/
     private static void  checkExists(final String fileName)
@@ -56,9 +51,13 @@ public class Main {
         return listNames;
     }
 
-    /*Выбор личностей и образование рандомной связи*/
+    /* Выбор личностей и образование рандомной связи */
     public static String selectionPerson(final HashMap<Integer, String> listNames)
             throws IOException {
+        String nameFirstPerson = null;
+        String existLink;
+        String link;
+        int numberFirstPerson;
         /*Ввод номера человека с клавиатуры*/
         System.out.println("Enter a number from 1 to " + listNames.size());
         BufferedReader br = new BufferedReader(
@@ -69,48 +68,58 @@ public class Main {
             nameFirstPerson = listNames.get(numberFirstPerson);
         }
         /*Проверка наличия ранее созданой связи в файле*/
-        checkExistsLinks();
+        existLink = checkExistsLinks(nameFirstPerson);
         /*Создание новой связи рандомно, если нет в файле*/
-        createNewLink(listNames);
+        if (existLink == null) {
+            link = createNewLink(listNames, existLink, nameFirstPerson, numberFirstPerson);
+        } else {
+            link = existLink;
+        }
         /*Вывод на экран созданной или уже существующей связи*/
         System.out.println(link + " связаны судьбой!");
         return link;
     }
 
     /*Проверка наличия существующей уже связи*/
-    public static String checkExistsLinks() throws FileNotFoundException {
+    public static String checkExistsLinks(final String nameFirstPerson) throws FileNotFoundException {
+        String existLink = null;
+        String nameSecondPerson;
         checkExists(fileExistingLinks);
-        StringBuilder links = readFileConnection(fileExistingLinks); // открываем файл
-        String[] arrayLink = links.toString().split("\t"); // в него ранее записывалось так: связь имя1, имя2 таб. По табу разбиваем на отдельные связи в массив
-        for (int i = 0; i < arrayLink.length; i++) { // теперь каждую из них рассматриваем
-            String[] bothDue = arrayLink[i].split(", "); //разбиваем в массив на отдельные два имя
-            if (bothDue[0].equals(nameFirstPerson)) { //если нулевой элемент массива (тоесть первое имя) совпадет с тем, что мы ввели - значит связь уже существует просто берем второе имя записываем
+        StringBuilder links = readFileConnection(fileExistingLinks);
+        String[] arrayLink = links.toString().split("\t");
+        for (int i = 0; i < arrayLink.length; i++) {
+            String[] bothDue = arrayLink[i].split(", ");
+            if (bothDue[0].equals(nameFirstPerson)) {
                 nameSecondPerson = bothDue[1];
-                link = (nameFirstPerson + ", " + nameSecondPerson);
+                existLink = (nameFirstPerson + ", " + nameSecondPerson);
                 break;
             }
         }
-        return link;
+        return existLink;
     }
 
     /*Создание новой связи*/
-    public static String createNewLink(final HashMap<Integer, String> listNames) {
+    public static String createNewLink(final HashMap<Integer, String> listNames, final String existLink, final String nameFirstPerson, final int numberFirstPerson) {
+        String createLink = null;
+        int numberSecondPerson;
+        String nameSecondPerson;
         Random random = new Random();
-        if (nameSecondPerson == null) { //делаем проверку на то, нашли ли мы в файле связь, если нет, то значит и второе имя мы не записали, значит оно равно нул
-            while (true) { //запускаем бесконечный цикл
-                numberSecondPerson = random.nextInt(listNames.size()) + 1; // берем рандомное число
-                if (numberSecondPerson != numberFirstPerson) { //если рандомное совпало с первым, тем что мы ввели с клавиатуры, то нужно другое рандомное число
-                    break; //выбрасывает из цикла, если рандом и нами введенное числа не совпали
+        if (existLink == null) {
+            while (true) {
+                numberSecondPerson = random.nextInt(listNames.size()) + 1;
+                if (numberSecondPerson != numberFirstPerson) {
+                    break;
                 }
             }
             nameSecondPerson = listNames.get(numberSecondPerson);
-            writeFileConnection(nameFirstPerson, nameSecondPerson);
+            createLink = writeFileConnection(nameFirstPerson, nameSecondPerson);
         }
-        return link;
+        return createLink;
     }
 
     /*запись в файл созданной связи*/
-    public static void writeFileConnection(final String nameFirstPerson, final String nameSecondPerson) {
+    public static String writeFileConnection(final String nameFirstPerson, final String nameSecondPerson) {
+        String link;
         link = (nameFirstPerson + ", " + nameSecondPerson);
         try (FileWriter writer = new FileWriter(fileExistingLinks, true)) {
             writer.write(link + '\t');
@@ -118,6 +127,7 @@ public class Main {
         catch (IOException e) {
             e.printStackTrace();
         }
+        return link;
     }
 
     /*Чтение данных из файла созданных связей*/
