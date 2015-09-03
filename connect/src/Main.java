@@ -81,7 +81,8 @@ public class Main {
     }
 
     /*Проверка наличия существующей уже связи*/
-    public static String checkExistsLinks(final String nameFirstPerson) throws FileNotFoundException {
+    public static String checkExistsLinks(final String nameFirstPerson)
+            throws FileNotFoundException {
         String existLink = null;
         String nameSecondPerson;
         checkExists(fileExistingLinks);
@@ -99,7 +100,11 @@ public class Main {
     }
 
     /*Создание новой связи*/
-    public static String createNewLink(final HashMap<Integer, String> listNames, final String existLink, final String nameFirstPerson, final int numberFirstPerson) {
+    public static String createNewLink(final HashMap<Integer, String> listNames,
+                                       final String existLink,
+                                       final String nameFirstPerson,
+                                       final int numberFirstPerson)
+            throws IOException {
         String createLink = null;
         int numberSecondPerson;
         String nameSecondPerson;
@@ -118,14 +123,16 @@ public class Main {
     }
 
     /*запись в файл созданной связи*/
-    public static String writeFileConnection(final String nameFirstPerson, final String nameSecondPerson) {
+    public static String writeFileConnection(final String nameFirstPerson,
+                                             final String nameSecondPerson)
+            throws IOException {
         String link;
         link = (nameFirstPerson + ", " + nameSecondPerson);
         try (FileWriter writer = new FileWriter(fileExistingLinks, true)) {
             writer.write(link + '\t');
         }
         catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
         return link;
     }
