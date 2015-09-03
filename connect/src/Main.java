@@ -56,24 +56,21 @@ public class Main {
             throws IOException {
         String nameFirstPerson = null;
         String existLink;
-        String link;
-        int numberFirstPerson;
         /*Ввод номера человека с клавиатуры*/
         System.out.println("Enter a number from 1 to " + listNames.size());
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(System.in));
         String numberEnterInKeyboard = br.readLine();
-        numberFirstPerson = Integer.parseInt(numberEnterInKeyboard);
+        int numberFirstPerson = Integer.parseInt(numberEnterInKeyboard);
         if (listNames.containsKey(numberFirstPerson)) {
             nameFirstPerson = listNames.get(numberFirstPerson);
         }
         /*Проверка наличия ранее созданой связи в файле*/
         existLink = checkExistsLinks(nameFirstPerson);
+        String link = existLink;
         /*Создание новой связи рандомно, если нет в файле*/
         if (existLink == null) {
             link = createNewLink(listNames, existLink, nameFirstPerson, numberFirstPerson);
-        } else {
-            link = existLink;
         }
         /*Вывод на экран созданной или уже существующей связи*/
         System.out.println(link + " связаны судьбой!");
@@ -81,7 +78,7 @@ public class Main {
     }
 
     /*Проверка наличия существующей уже связи*/
-    public static String checkExistsLinks(final String nameFirstPerson)
+    public static String checkExistsLinks(String nameFirstPerson)
             throws FileNotFoundException {
         String existLink = null;
         String nameSecondPerson;
@@ -126,8 +123,7 @@ public class Main {
     public static String writeFileConnection(final String nameFirstPerson,
                                              final String nameSecondPerson)
             throws IOException {
-        String link;
-        link = (nameFirstPerson + ", " + nameSecondPerson);
+        String link = nameFirstPerson + ", " + nameSecondPerson;
         try (FileWriter writer = new FileWriter(fileExistingLinks, true)) {
             writer.write(link + '\t');
         }
