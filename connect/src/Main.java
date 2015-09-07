@@ -1,10 +1,14 @@
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class Main {
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         HashMap<Integer, String> s = readFile(fileNumbersNames);
         selectionPerson(s);
     }
@@ -13,7 +17,7 @@ public class Main {
     final static String fileExistingLinks = "D://links.txt";
 
     /*Проверка наличия файла*/
-    private static void  checkExists(final String fileName)
+    private static void  checkExists(String fileName)
             throws FileNotFoundException {
         File file = new File(fileName);
         if (!file.exists()) {
@@ -26,7 +30,7 @@ public class Main {
     }
 
     /*Чтение файла*/
-    public static HashMap<Integer, String> readFile(final String fileName)
+    public static HashMap<Integer, String> readFile(String fileName)
             throws IOException {
         File file = new File(fileName);
         HashMap<Integer, String> listNames = new HashMap<>();
@@ -52,7 +56,7 @@ public class Main {
     }
 
     /* Выбор личностей и образование рандомной связи */
-    public static String selectionPerson(final HashMap<Integer, String> listNames)
+    public static String selectionPerson(HashMap<Integer, String> listNames)
             throws IOException {
         String nameFirstPerson = null;
         String existLink;
@@ -97,31 +101,26 @@ public class Main {
     }
 
     /*Создание новой связи*/
-    public static String createNewLink(final HashMap<Integer, String> listNames,
-                                       final String existLink,
-                                       final String nameFirstPerson,
-                                       final int numberFirstPerson)
+    public static String createNewLink(HashMap<Integer, String> listNames,
+                                       String existLink,
+                                       String nameFirstPerson,
+                                       int numberFirstPerson)
             throws IOException {
+        listNames.remove(numberFirstPerson);
         String createLink = null;
-        int numberSecondPerson;
-        String nameSecondPerson;
         Random random = new Random();
+        String[] remainderOfTheList = listNames.values().toArray(new String[listNames.size()]);
         if (existLink == null) {
-            while (true) {
-                numberSecondPerson = random.nextInt(listNames.size()) + 1;
-                if (numberSecondPerson != numberFirstPerson) {
-                    break;
-                }
-            }
-            nameSecondPerson = listNames.get(numberSecondPerson);
+            int numberSecondPerson = random.nextInt(remainderOfTheList.length);
+            String nameSecondPerson = remainderOfTheList[numberSecondPerson];
             createLink = writeFileConnection(nameFirstPerson, nameSecondPerson);
         }
         return createLink;
     }
 
     /*запись в файл созданной связи*/
-    public static String writeFileConnection(final String nameFirstPerson,
-                                             final String nameSecondPerson)
+    public static String writeFileConnection(String nameFirstPerson,
+                                             String nameSecondPerson)
             throws IOException {
         String link = nameFirstPerson + ", " + nameSecondPerson;
         try (FileWriter writer = new FileWriter(fileExistingLinks, true)) {
@@ -134,7 +133,7 @@ public class Main {
     }
 
     /*Чтение данных из файла созданных связей*/
-    public  static StringBuilder readFileConnection(final String nameFile) {
+    public  static StringBuilder readFileConnection(String nameFile) {
         StringBuilder str = new StringBuilder();
         try (FileReader reader = new FileReader(nameFile)) {
             int c;
