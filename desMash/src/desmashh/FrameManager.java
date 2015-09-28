@@ -9,7 +9,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
-import static desmashh.ConnectDB.ConnectDB;
+import static desmashh.WorkDB.ConnectDB;
+import static desmashh.WorkDB.SelectTable;
+import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 
@@ -17,12 +19,12 @@ import javax.swing.JOptionPane;
  *
  * @author Artem
  */
-public class JFrame1 extends javax.swing.JFrame {
+public class FrameManager extends javax.swing.JFrame {
 
     /**
      * Creates new form JFrame1
      */
-    public JFrame1() {
+    public FrameManager() {
         initComponents();
     }
 
@@ -40,6 +42,7 @@ public class JFrame1 extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         addNewRow = new javax.swing.JButton();
         newOrder = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,7 +58,7 @@ public class JFrame1 extends javax.swing.JFrame {
 
             },
             new String [] {
-                "name", "quantity"
+                "Название", "Количество"
             }
         ) {
             Class[] types = new Class [] {
@@ -101,6 +104,13 @@ public class JFrame1 extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Назад");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,8 +118,10 @@ public class JFrame1 extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(addNewRow)
-                .addGap(49, 49, 49)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(newOrder)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(exit)
                 .addContainerGap())
@@ -121,10 +133,12 @@ public class JFrame1 extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(addNewRow)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(exit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(newOrder)))
+                        .addComponent(addNewRow)
+                        .addComponent(newOrder))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(exit)
+                        .addComponent(jButton1)))
                 .addGap(37, 37, 37))
         );
 
@@ -139,7 +153,7 @@ public class JFrame1 extends javax.swing.JFrame {
     private void jTable1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTable1AncestorAdded
     /*выводим в табличке все что есть в БД*/
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); 
-        String sql = ("SELECT * FROM ListDetails");
+        String sql = SelectTable("ListDetails");
         try (Connection con = ConnectDB()) {
             try(java.sql.Statement st = con.createStatement();
                     ResultSet res = st.executeQuery(sql)){
@@ -151,11 +165,11 @@ public class JFrame1 extends javax.swing.JFrame {
             }
             con.close(); 
         }
-        catch(SQLException e){
+        catch(SQLException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }         
+        }
+// TODO add your handling code here:
+         
 // TODO add your handling code here:
     }//GEN-LAST:event_jTable1AncestorAdded
 
@@ -181,67 +195,43 @@ public class JFrame1 extends javax.swing.JFrame {
         } else {
                 String name = model.getValueAt(i, 0).toString();
                 String quantity = model.getValueAt(i, 1).toString();
-                String sql = ("INSERT INTO `desMash`.`Orders` "
+                try (Connection con = ConnectDB()){
+                    PreparedStatement ps;
+                    ps = con.prepareStatement("INSERT INTO `desMash`.`Orders` "
                         + "(`Date`, `Name`, `Quantity`) "
-                        + "VALUES ('" + date + "', '" + name + "', '" 
-                        + quantity + "');");
-                try {
-                    ConnectDB().createStatement().execute(sql);
+                        + "VALUES (?, ?, ?);");
+                    ps.setString(1, date);
+                    ps.setString(2, name);
+                    ps.setString(3, quantity);
+                    ps.executeUpdate();
+                    ps.close();
                 } catch (ClassNotFoundException | SQLException ex) {
                      ex.printStackTrace();
                 }                
             }
         }
-        try {
-            ConnectDB().createStatement().execute("INSERT INTO "
-                    + "`desMash`.`ListOrders` (`id`, `Date`) "
-                    + "VALUES (NULL, '" + date + "');");
+        try (Connection con = ConnectDB()){
+            PreparedStatement ps;
+            ps = con.prepareStatement("INSERT INTO `desMash`.`ListOrders` "
+                    + "(`id`, `Date`) VALUES (NULL, ?);");
+            ps.setString(1, date);
+            ps.executeUpdate();
+            ps.close();
         } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
         }
         JOptionPane.showMessageDialog(this, "Заказ отправлен " + date);
     }//GEN-LAST:event_newOrderActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-        
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(JFrame1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(JFrame1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(JFrame1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JFrame1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new JFrame1().setVisible(true);                
-            }
-        });
-    }
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        new FrameHead().setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addNewRow;
     private javax.swing.JButton exit;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JButton newOrder;
