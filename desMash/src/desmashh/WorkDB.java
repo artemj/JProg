@@ -13,14 +13,27 @@ import java.sql.SQLException;
  *
  * @author Artem
  */
-public class ConnectDB {
+public class WorkDB {
+    
     public static Connection ConnectDB() throws ClassNotFoundException, 
             SQLException {
-        Class.forName("com.mysql.jdbc.Driver");    
-           String url = "jdbc:mysql://localhost:3306/desMash";
-           String name = "root";
-           String pass = "";
-           Connection con = DriverManager.getConnection(url, name, pass);
-           return con;
+        Class.forName("com.mysql.jdbc.Driver");  
+        String url = "jdbc:mysql://localhost:3306/desMash";
+        String name = "root";
+        String pass = "";
+        Connection con = DriverManager.getConnection(url, name, pass);
+        return con;
     }
+    
+    public static String SelectTable(String nameTable) {
+        String sql = ("SELECT * FROM " + nameTable);
+        return sql;
+    }
+    
+    public static String SelectTable (String nameTable, String condition){
+        String sql = ("SELECT * FROM " + nameTable + " WHERE " + condition);
+        return sql;
+    }
+    
+    
 }
