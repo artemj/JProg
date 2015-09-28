@@ -37,23 +37,23 @@ public class FrameManager extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        exit = new javax.swing.JButton();
+        exitButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable = new javax.swing.JTable();
         addNewRow = new javax.swing.JButton();
         newOrder = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        exit.setText("Закрыть");
-        exit.addActionListener(new java.awt.event.ActionListener() {
+        exitButton.setText("Закрыть");
+        exitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitActionPerformed(evt);
+                exitButtonActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -69,24 +69,24 @@ public class FrameManager extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jTable1.addAncestorListener(new javax.swing.event.AncestorListener() {
+        jTable.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                jTable1AncestorAdded(evt);
+                jTableAncestorAdded(evt);
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
+                jTableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
+        jScrollPane1.setViewportView(jTable);
+        if (jTable.getColumnModel().getColumnCount() > 0) {
+            jTable.getColumnModel().getColumn(0).setResizable(false);
+            jTable.getColumnModel().getColumn(1).setResizable(false);
         }
 
         addNewRow.setText("Добавить");
@@ -104,10 +104,10 @@ public class FrameManager extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Назад");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        backButton.setText("Назад");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                backButtonActionPerformed(evt);
             }
         });
 
@@ -121,9 +121,9 @@ public class FrameManager extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(newOrder)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(backButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(exit)
+                .addComponent(exitButton)
                 .addContainerGap())
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
@@ -137,61 +137,57 @@ public class FrameManager extends javax.swing.JFrame {
                         .addComponent(addNewRow)
                         .addComponent(newOrder))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(exit)
-                        .addComponent(jButton1)))
+                        .addComponent(exitButton)
+                        .addComponent(backButton)))
                 .addGap(37, 37, 37))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
+    private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         System.exit(0);
-        // TODO add your handling code here:
-    }//GEN-LAST:event_exitActionPerformed
+    }//GEN-LAST:event_exitButtonActionPerformed
 
-    private void jTable1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTable1AncestorAdded
+    private void jTableAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTableAncestorAdded
     /*выводим в табличке все что есть в БД*/
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); 
+        DefaultTableModel model = (DefaultTableModel) jTable.getModel(); 
         String sql = SelectTable("ListDetails");
         try (Connection con = ConnectDB()) {
-            try(java.sql.Statement st = con.createStatement();
+            try (java.sql.Statement st = con.createStatement();
                     ResultSet res = st.executeQuery(sql)){
-                while (res.next()){
+                while (res.next()) {
                     String d1 = res.getString(2);
                     String d2 = res.getString(3);
-                    model.addRow(new Object [] {d1,d2}); 
+                    model.addRow(new Object[] {d1, d2}); 
                 }
             }
             con.close(); 
         }
-        catch(SQLException | ClassNotFoundException e){
+        catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
         }
-// TODO add your handling code here:
-         
-// TODO add your handling code here:
-    }//GEN-LAST:event_jTable1AncestorAdded
+    }//GEN-LAST:event_jTableAncestorAdded
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-    }//GEN-LAST:event_jTable1MouseClicked
+    private void jTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableMouseClicked
+    }//GEN-LAST:event_jTableMouseClicked
 
     private void addNewRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewRowActionPerformed
         /*Добавляем новую строку*/
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); 
+        DefaultTableModel model = (DefaultTableModel) jTable.getModel(); 
         String a = "";
         int d = 0;
-        model.addRow(new Object [] {a,d});
+        model.addRow(new Object[] {a, d});
     }//GEN-LAST:event_addNewRowActionPerformed
 
     private void newOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newOrderActionPerformed
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) jTable.getModel();
         int countRow = model.getRowCount(); //количество строк
-        java.util.Date a =java.util.Calendar.getInstance().getTime();//текущая дата и время
+        java.util.Date a = java.util.Calendar.getInstance().getTime(); //текущая дата и время
         SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM-hh:mm");//формат вывода даты
         String date = formatDate.format(a);
-        for(int i=0; i<countRow; i++){
-            if(model.getValueAt(i, 1).equals(Integer.toString(0))){ //сравниваем с 0 каждый второй элемент            
+        for (int i = 0; i < countRow; i++){
+            if (model.getValueAt(i, 1).equals(Integer.toString(0)) ){ //сравниваем с 0 каждый второй элемент            
         } else {
                 String name = model.getValueAt(i, 0).toString();
                 String quantity = model.getValueAt(i, 1).toString();
@@ -210,7 +206,7 @@ public class FrameManager extends javax.swing.JFrame {
                 }                
             }
         }
-        try (Connection con = ConnectDB()){
+        try (Connection con = ConnectDB()) {
             PreparedStatement ps;
             ps = con.prepareStatement("INSERT INTO `desMash`.`ListOrders` "
                     + "(`id`, `Date`) VALUES (NULL, ?);");
@@ -223,17 +219,17 @@ public class FrameManager extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Заказ отправлен " + date);
     }//GEN-LAST:event_newOrderActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         new FrameHead().setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_backButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addNewRow;
-    private javax.swing.JButton exit;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton backButton;
+    private javax.swing.JButton exitButton;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable;
     private javax.swing.JButton newOrder;
     // End of variables declaration//GEN-END:variables
 

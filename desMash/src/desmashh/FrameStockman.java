@@ -150,18 +150,18 @@ public class FrameStockman extends javax.swing.JFrame {
         /*выводим в табличке все что есть в БД по заказам*/
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         jTable1.setRowHeight(20);        
-        for(int i = 0; i < jTable1.getColumnCount(); i++){
+        for (int i = 0; i < jTable1.getColumnCount(); i++) {
             jTable1.getColumnModel().getColumn(i).setPreferredWidth(150);            
         }
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); 
         String sql = SelectTable("ListOrders");
         try (Connection con = ConnectDB()) {
             try(java.sql.Statement st = con.createStatement();
-                    ResultSet res = st.executeQuery(sql)){
-                while (res.next()){
+                    ResultSet res = st.executeQuery(sql)) {
+                while (res.next()) {
                     String d1 = res.getString(1);
                     String d2 = res.getString(2);
-                    model.addRow(new Object [] {d1,d2}); 
+                    model.addRow(new Object[] {d1,d2}); 
                 }
             }
             con.close(); 
@@ -175,7 +175,6 @@ public class FrameStockman extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable1AncestorMoved
 
     private void jTable1AncestorRemoved(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTable1AncestorRemoved
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTable1AncestorRemoved
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked

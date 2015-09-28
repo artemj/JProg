@@ -116,7 +116,7 @@ public class FrameOrder extends javax.swing.JFrame {
 
     private void jtAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jtAncestorAdded
         DefaultTableModel model = (DefaultTableModel) jt.getModel();
-        String sql = ("SELECT * FROM Orders WHERE `Date`='"+date+"'");
+        String sql = SelectTable("Orders","`Date`='" + date + "'");
         try (Connection con = ConnectDB()) {
             try(java.sql.Statement st = con.createStatement();
                     ResultSet res = st.executeQuery(sql)){
