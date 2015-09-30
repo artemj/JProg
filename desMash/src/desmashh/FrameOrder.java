@@ -5,13 +5,11 @@
  */
 package desmashh;
 
-import static desmashh.WorkDB.ConnectDB;
-import static desmashh.WorkDB.SelectTable;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import static desmashh.WorkDB.showTableOfTwoColumns;
+import static desmashh.WorkDB.selectTable;
 import javax.swing.table.DefaultTableModel;
 import static desmashh.Main.date;
+import java.sql.SQLException;
 
 /**
  *
@@ -115,22 +113,14 @@ public class FrameOrder extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jtAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jtAncestorAdded
-        DefaultTableModel model = (DefaultTableModel) jt.getModel();
-        String sql = SelectTable("Orders","`Date`='" + date + "'");
-        try (Connection con = ConnectDB()) {
-            try(java.sql.Statement st = con.createStatement();
-                    ResultSet res = st.executeQuery(sql)){
-                while (res.next()){
-                    String d1 = res.getString(2);
-                    String d2 = res.getString(3);
-                    model.addRow(new Object [] {d1,d2}); 
-                }
-            }
-            con.close(); 
+        try {
+            DefaultTableModel model = (DefaultTableModel) jt.getModel();
+            String condition = ("`Date`='" + date + "'");
+            String sql = selectTable("Orders",condition);
+            showTableOfTwoColumns(model, sql, 2, 3);
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
         }
-        catch(SQLException | ClassNotFoundException e){
-            e.printStackTrace();
-        } 
     }//GEN-LAST:event_jtAncestorAdded
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed

@@ -5,11 +5,8 @@
  */
 package desmashh;
 
-import static desmashh.WorkDB.ConnectDB;
-import static desmashh.WorkDB.SelectTable;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import static desmashh.WorkDB.showTableOfTwoColumns;
+import static desmashh.WorkDB.selectTable;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import static desmashh.Main.date;
@@ -154,21 +151,8 @@ public class FrameStockman extends javax.swing.JFrame {
             jTable1.getColumnModel().getColumn(i).setPreferredWidth(150);            
         }
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); 
-        String sql = SelectTable("ListOrders");
-        try (Connection con = ConnectDB()) {
-            try(java.sql.Statement st = con.createStatement();
-                    ResultSet res = st.executeQuery(sql)) {
-                while (res.next()) {
-                    String d1 = res.getString(1);
-                    String d2 = res.getString(2);
-                    model.addRow(new Object[] {d1,d2}); 
-                }
-            }
-            con.close(); 
-        }
-        catch(SQLException | ClassNotFoundException e){
-            e.printStackTrace();
-        }        
+        String sql = selectTable("ListOrders");
+        showTableOfTwoColumns(model, sql, 1, 2);
     }//GEN-LAST:event_jTable1AncestorAdded
 
     private void jTable1AncestorMoved(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTable1AncestorMoved

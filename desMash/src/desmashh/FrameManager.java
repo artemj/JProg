@@ -5,15 +5,12 @@
  */
 package desmashh;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
-import static desmashh.WorkDB.ConnectDB;
-import static desmashh.WorkDB.SelectTable;
-import java.sql.PreparedStatement;
-import java.text.SimpleDateFormat;
+import static desmashh.WorkDB.showTableOfTwoColumns;
+import static desmashh.WorkDB.postNewOrder;
+import static desmashh.WorkDB.selectTable;
 import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -46,7 +43,7 @@ public class FrameManager extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        exitButton.setText("Закрыть");
+        exitButton.setText("Выход");
         exitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitButtonActionPerformed(evt);
@@ -152,21 +149,8 @@ public class FrameManager extends javax.swing.JFrame {
     private void jTableAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTableAncestorAdded
     /*выводим в табличке все что есть в БД*/
         DefaultTableModel model = (DefaultTableModel) jTable.getModel(); 
-        String sql = SelectTable("ListDetails");
-        try (Connection con = ConnectDB()) {
-            try (java.sql.Statement st = con.createStatement();
-                    ResultSet res = st.executeQuery(sql)){
-                while (res.next()) {
-                    String d1 = res.getString(2);
-                    String d2 = res.getString(3);
-                    model.addRow(new Object[] {d1, d2}); 
-                }
-            }
-            con.close(); 
-        }
-        catch (SQLException | ClassNotFoundException e){
-            e.printStackTrace();
-        }
+        String sql = selectTable("ListDetails");
+        showTableOfTwoColumns(model, sql, 2, 3);
     }//GEN-LAST:event_jTableAncestorAdded
 
     private void jTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableMouseClicked
@@ -181,41 +165,8 @@ public class FrameManager extends javax.swing.JFrame {
     }//GEN-LAST:event_addNewRowActionPerformed
 
     private void newOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newOrderActionPerformed
-        DefaultTableModel model = (DefaultTableModel) jTable.getModel();
-        int countRow = model.getRowCount(); //количество строк
-        java.util.Date a = java.util.Calendar.getInstance().getTime(); //текущая дата и время
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM-hh:mm");//формат вывода даты
-        String date = formatDate.format(a);
-        for (int i = 0; i < countRow; i++){
-            if (model.getValueAt(i, 1).equals(Integer.toString(0)) ){ //сравниваем с 0 каждый второй элемент            
-        } else {
-                String name = model.getValueAt(i, 0).toString();
-                String quantity = model.getValueAt(i, 1).toString();
-                try (Connection con = ConnectDB()){
-                    PreparedStatement ps;
-                    ps = con.prepareStatement("INSERT INTO `desMash`.`Orders` "
-                        + "(`Date`, `Name`, `Quantity`) "
-                        + "VALUES (?, ?, ?);");
-                    ps.setString(1, date);
-                    ps.setString(2, name);
-                    ps.setString(3, quantity);
-                    ps.executeUpdate();
-                    ps.close();
-                } catch (ClassNotFoundException | SQLException ex) {
-                     ex.printStackTrace();
-                }                
-            }
-        }
-        try (Connection con = ConnectDB()) {
-            PreparedStatement ps;
-            ps = con.prepareStatement("INSERT INTO `desMash`.`ListOrders` "
-                    + "(`id`, `Date`) VALUES (NULL, ?);");
-            ps.setString(1, date);
-            ps.executeUpdate();
-            ps.close();
-        } catch (ClassNotFoundException | SQLException ex) {
-            ex.printStackTrace();
-        }
+        /*Отправка нового заказа*/
+        String date = postNewOrder(jTable);
         JOptionPane.showMessageDialog(this, "Заказ отправлен " + date);
     }//GEN-LAST:event_newOrderActionPerformed
 
